@@ -1,4 +1,4 @@
-# $Id: Object.pm,v 1.1.1.1 2002/07/01 15:19:12 matt Exp $
+# $Id: Object.pm,v 1.3 2002/07/02 14:36:39 matt Exp $
 
 package POE::Component::IRC::Object;
 use strict;
@@ -7,7 +7,7 @@ use POE::Component::IRC;
 
 use vars qw($VERSION $AUTOLOAD);
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 sub new {
     my $class = shift;
@@ -62,11 +62,8 @@ sub _stop {
 
 sub _default {
     my ($self, $kernel, $state, $args) = @_[OBJECT, KERNEL, ARG0, ARG1];
-    shift(@_);
-    my @new_ = @_[ 0 .. ARG0-1 ];
-    for (@$args) {
-        push @new_, $_;
-    }
+    my @new_ = @_[ 1 .. (ARG0-1) ];
+    push @new_, @$args;
     $self->$state(@new_);
     return 0;
 }
@@ -135,7 +132,7 @@ POE::Component::IRC::Object - A slightly simpler OO interface to PoCoIRC
   
   sub irc_public {
     my ($self, $kernel, $who, $where, $msg) = 
-      @_[OBJECT, ARG0, ARG1, ARG2];
+      @_[OBJECT, KERNEL, ARG0, ARG1, ARG2];
     
     $msg =~ s/^doctor[:,]?\s+//;
     
